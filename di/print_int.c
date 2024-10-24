@@ -6,7 +6,7 @@
 /*   By: mde-beer <marvin@42.fr>                       +#+                    */
 /*                                                    +#+                     */
 /*   Created: 2024/10/22 16:50:22 by mde-beer       #+#    #+#                */
-/*   Updated: 2024/10/24 18:12:14 by mde-beer       ########   odam.nl        */
+/*   Updated: 2024/10/24 18:42:24 by mde-beer       ########   odam.nl        */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,8 @@ static void add_sign(char **out, t_printf_arg *argument, int negative)
 	char *const ret = (char *)ft_calloc(ft_strlen(*out) + 2, sizeof(char));
 	char		sign;
 
+	if (!ret)
+		return (NULL);
 	if (negative)
 		sign = '-';
 	else if (argument->flags & signprefix)
@@ -74,6 +76,13 @@ static void add_sign(char **out, t_printf_arg *argument, int negative)
 	ft_strlcpy(ret + 1, *out, ft_strlen(*out) + 1);
 	free(*ret);
 	*out = ret;
+}
+
+static void	pad_front(char **out, t_printf_argument *argument)
+{
+	char *out;
+
+
 }
 
 static char	*get_printable_val(t_printf_arg *argument, int value)
@@ -88,11 +97,11 @@ static char	*get_printable_val(t_printf_arg *argument, int value)
 	if (!out)
 		return (NULL);
 	if (val < 0 || argument->flags & (spaceprefix | signprefix))
-		add_sign(*out, argument, (value < 0));
+		add_sign(&out, argument, (value < 0));
 	if (!(argument->flags & leftjustify) && argument->width > ft_strlen(out))
-		pad_front(out, argument);
+		pad_front(&out, argument);
 	if (argument->flags & leftjustify && argument->width > ft_strlen(out))
-		pad_back(out, argument);
+		pad_back(&out, argument);
 	return (out);
 }
 
@@ -103,6 +112,5 @@ void	print_int(int fd, t_printf_arg *argument, int *count, va_list *args)
 
 	if (!out)
 		// panic
-	*count += ft_strlen(out);
-	write(fd, out, ft_strlen(out));
+	*count += write(fd, out, ft_strlen(out));
 }
