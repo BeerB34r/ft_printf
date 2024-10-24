@@ -6,7 +6,7 @@
 /*   By: mde-beer <marvin@42.fr>                       +#+                    */
 /*                                                    +#+                     */
 /*   Created: 2024/10/22 16:50:22 by mde-beer       #+#    #+#                */
-/*   Updated: 2024/10/24 13:25:38 by mde-beer       ########   odam.nl        */
+/*   Updated: 2024/10/24 18:12:14 by mde-beer       ########   odam.nl        */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ static char	*get_printable_val(t_printf_arg *argument, int value)
 	return (out);
 }
 
-void	print_int(t_printf_arg *argument, int *count, va_list *args)
+void	print_int(int fd, t_printf_arg *argument, int *count, va_list *args)
 {
 	const int 	value = va_arg(*args, int);
 	char *const	out = get_printable_val(argument, value);
@@ -104,5 +104,5 @@ void	print_int(t_printf_arg *argument, int *count, va_list *args)
 	if (!out)
 		// panic
 	*count += ft_strlen(out);
-	write(
+	write(fd, out, ft_strlen(out));
 }
