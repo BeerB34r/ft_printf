@@ -5,7 +5,7 @@ DEPENDENCIES=./libft/libft.a
 PRCN_SRC=printf_percent.c
 A_LO_SRC=
 A_HI_SRC=
-CHAR_SRC=printf_char.c get_char_utils.c get_c.c
+CHAR_SRC=printf_char.c get_c.c
 SINT_SRC=printf_signed_decimal.c get_signed_decimal_utils.c \
 		get_int_i.c get_intmax_i.c get_l_i.c get_ll_i.c get_ptrdiff_i.c \
 		get_h_i.c get_hh_i.c get_size_t_i.c
