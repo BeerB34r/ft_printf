@@ -124,5 +124,6 @@ unsigned int current_len
 	*format = strchr(*format, *specifier) + 1;
 	if (isupper(*specifier))
 		arg.uppercase = true;
+	return (calloc_fa_c(0));
 	return (get_formatted(arg, args, current_len));
 }

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                            ::::::::        */
-/*   get_argument.c                                          :+:    :+:       */
+/*   handle_precision.c                                      :+:    :+:       */
 /*                                                          +:+               */
 /*   By: mde-beer <mde-beer@student.codam.nl>              +#+                */
 /*                                                        +#+                 */
-/*   Created: 2025/11/17 19:33:50 by mde-beer            #+#    #+#           */
-/*   Updated: 2025/11/17 21:45:55 by mde-beer            ########   odam.nl   */
+/*   Created: 2025/11/17 22:27:38 by mde-beer            #+#    #+#           */
+/*   Updated: 2025/11/17 22:29:15 by mde-beer            ########   odam.nl   */
 /*                                                                            */
 /*   —————No norm compliance?——————                                           */
 /*   ⠀⣞⢽⢪⢣⢣⢣⢫⡺⡵⣝⡮⣗⢷⢽⢽⢽⣮⡷⡽⣜⣜⢮⢺⣜⢷⢽⢝⡽⣝                                           */
@@ -25,100 +25,86 @@
 /*   ——————————————————————————————                                           */
 /* ************************************************************************** */
 
+#include <stddef.h>
+#include <stdlib.h>
+#include <string.h>
+#include "fa_c.h"
 #include "_printf.h"
 
-static
-int
-	add_flag(
-enum e_printf_flags *flags,
-char c
-)
-{
-	if (c == '-')
-		*flags |= MINUS;
-	else if (c == '+')
-		*flags |= PLUS;
-	else if (c == ' ')
-		*flags |= SPACE;
-	else if (c == '#')
-		*flags |= ALTERNATE;
-	else
-		*flags |= ZERO;
-	return (0);
-}
+static int	prepend_zero(t_fa_c **out, struct s_printf_argument format);
 
-static
-int
-	add_length(
-enum e_printf_length *length,
-char c
-)
-{
-	if (*length == NONE && c == 'h')
-		*length = H;
-	else if (*length == NONE && c == 'l')
-		*length = L;
-	else if (*length == NONE && c == 'j')
-		*length = J;
-	else if (*length == NONE && c == 'z')
-		*length = Z;
-	else if (*length == NONE && c == 't')
-		*length = T;
-	else if (*length == NONE && c == 'L')
-		*length = LD;
-	else if (*length == H && c == 'h')
-		*length = HH;
-	else if (*length == L && c == 'l')
-		*length = LL;
-	else
-		return (1);
-	return (0);
-}
+// As a reminder, the format specifiers enum is in the following order:
+// PERCENT
+// CHARACTER
+// STRING
+// SIGNED_INTEGER
+// OCTAL
+// HEXADECIMAL
+// UNSIGNED_INTEGER
+// FLOAT
+// DECIMAL_EXPONENT
+// HEXADECIMAL_EXPONENT
+// HEURISTIC_FLOAT
+// STORE
+// POINTER
 
-static
-int
-	handle_width(
-struct s_printf_argument *arg,
-char c
-)
-{
-	arg->using_width = true;
-	if (c == '*')
-		arg->w_arg = true;
-	else
-		arg->width = (10 * arg->width) + (c - '0');
-	return (0);
-}
-
-static
 int
 	handle_precision(
-struct s_printf_argument *arg,
-char c
+t_fa_c **out,
+struct s_printf_argument format
 )
 {
-	arg->using_precision = true;
-	if (c == '*')
-		arg->p_arg = true;
-	else
-		arg->precision = (10 * arg->precision) + (c - '0');
+	static int (*const	specifiers[])(t_fa_c **, struct s_printf_argument) = {
+		NULL,
+		NULL,
+		NULL,
+		prepend_zero,
+		prepend_zero,
+		prepend_zero,
+		prepend_zero,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+	};
+
+	if (specifiers[format.specifier])
+		return (specifiers[format.specifier](out, format));
 	return (0);
 }
 
+static
 int
-	add_to_argument(
-struct s_printf_argument *arg,
-enum e_get_specifier_state state,
-char c
+	prepend_zero(
+t_fa_c **out,
+struct s_printf_argument format
 )
 {
-	if (state == FLAGS)
-		return (add_flag(&arg->flags, c));
-	else if (state == WIDTH)
-		return (handle_width(arg, c));
-	else if (state == PRECISION)
-		return (handle_precision(arg, c));
-	else if (state == LENGTH)
-		return (add_length(&arg->length, c));
-	return (1);
+	t_fa_c	*temp;
+
+	if (!format.precision && (*out)->buf[0] == '0')
+	{
+		temp = realloc_fa_c(*out, 0);
+		if (!temp)
+			free(*out);
+		*out = temp;
+		return (!*out);
+	}
+	else if (format.precision > (int)strlen((*out)->buf))
+	{
+		temp = calloc_fa_c(format.precision);
+		if (!temp)
+		{
+			free(*out);
+			return (1);
+		}
+		memset(temp->buf, '0', sizeof(char) * temp->len);
+		memcpy(temp + temp->len - (*out)->len,
+			(*out)->buf, sizeof(char) * (*out)->len);
+		free(*out);
+		*out = temp;
+	}
+	return (0);
 }

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                            ::::::::        */
-/*   ft_printf.c                                             :+:    :+:       */
+/*   get_argument.c                                          :+:    :+:       */
 /*                                                          +:+               */
 /*   By: mde-beer <mde-beer@student.codam.nl>              +#+                */
 /*                                                        +#+                 */
-/*   Created: 2025/11/15 19:04:44 by mde-beer            #+#    #+#           */
-/*   Updated: 2025/11/17 20:49:36 by mde-beer            ########   odam.nl   */
+/*   Created: 2025/11/17 19:33:50 by mde-beer            #+#    #+#           */
+/*   Updated: 2025/11/17 21:45:55 by mde-beer            ########   odam.nl   */
 /*                                                                            */
 /*   —————No norm compliance?——————                                           */
 /*   ⠀⣞⢽⢪⢣⢣⢣⢫⡺⡵⣝⡮⣗⢷⢽⢽⢽⣮⡷⡽⣜⣜⢮⢺⣜⢷⢽⢝⡽⣝                                           */
@@ -25,115 +25,100 @@
 /*   ——————————————————————————————                                           */
 /* ************************************************************************** */
 
-#include <stdarg.h>
-#include <stddef.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <stdbool.h>
-#include "fa_c.h"
 #include "_printf.h"
 
 static
 int
-	printf_chassis(
-const char *format,
-va_list args,
-t_fa_c **store
+	add_flag(
+enum e_printf_flags *flags,
+char c
 )
 {
-	t_fa_c	*out;
-	t_fa_c	*temp;
-
-	if (!*format)
-		return (0);
-	else if (*format == '%')
-		out = handle_format(&format, args, (*store)->len);
+	if (c == '-')
+		*flags |= MINUS;
+	else if (c == '+')
+		*flags |= PLUS;
+	else if (c == ' ')
+		*flags |= SPACE;
+	else if (c == '#')
+		*flags |= ALTERNATE;
 	else
-		out = handle_raw(&format);
-	if (!out)
-		return (1);
-	temp = join_fa_c(*store, out);
-	free(out);
-	free(*store);
-	if (!temp)
-		return (1);
-	*store = temp;
-	return (printf_chassis(format, args, store));
+		*flags |= ZERO;
+	return (0);
 }
 
+static
 int
-	ft_snprintf(
-char *buf,
-size_t buf_size,
-const char *format,
-...
+	add_length(
+enum e_printf_length *length,
+char c
 )
 {
-	va_list	args;
-	t_fa_c	*formatted;
-	int		ret;
-
-	formatted = NULL;
-	va_start(args, format);
-	if (printf_chassis(format, args, &formatted))
-		return (-1);
-	ret = formatted->len;
-	if (buf_size - 1 < formatted->len)
-	{
-		memcpy(buf, formatted->buf, buf_size - 1);
-		buf[buf_size - 1] = 0;
-	}
+	if (*length == NONE && c == 'h')
+		*length = H;
+	else if (*length == NONE && c == 'l')
+		*length = L;
+	else if (*length == NONE && c == 'j')
+		*length = J;
+	else if (*length == NONE && c == 'z')
+		*length = Z;
+	else if (*length == NONE && c == 't')
+		*length = T;
+	else if (*length == NONE && c == 'L')
+		*length = LD;
+	else if (*length == H && c == 'h')
+		*length = HH;
+	else if (*length == L && c == 'l')
+		*length = LL;
 	else
-	{
-		memcpy(buf, formatted->buf, formatted->len);
-		buf[formatted->len] = 0;
-	}
-	free(formatted);
-	return (ret);
+		return (1);
+	return (0);
+}
+
+static
+int
+	get_argument_width(
+struct s_printf_argument *arg,
+char c
+)
+{
+	arg->using_width = true;
+	if (c == '*')
+		arg->w_arg = true;
+	else
+		arg->width = (10 * arg->width) + (c - '0');
+	return (0);
+}
+
+static
+int
+	get_argument_precision(
+struct s_printf_argument *arg,
+char c
+)
+{
+	arg->using_precision = true;
+	if (c == '*')
+		arg->p_arg = true;
+	else
+		arg->precision = (10 * arg->precision) + (c - '0');
+	return (0);
 }
 
 int
-	ft_dprintf(
-int fd,
-const char *format,
-...
+	add_to_argument(
+struct s_printf_argument *arg,
+enum e_get_specifier_state state,
+char c
 )
 {
-	va_list	args;
-	t_fa_c	*formatted;
-	int		ret;
-
-	formatted = NULL;
-	va_start(args, format);
-	if (printf_chassis(format, args, &formatted))
-		return (-1);
-	ret = write(fd, formatted->buf, formatted->len);
-	free(formatted);
-	return (ret);
-}
-
-int
-	ft_printf(
-const char *format,
-...
-)
-{
-	va_list	args;
-	t_fa_c	*formatted;
-	int		ret;
-
-	formatted = NULL;
-	va_start(args, format);
-	if (printf_chassis(format, args, &formatted))
-		return (-1);
-	ret = write(STDOUT_FILENO, formatted->buf, formatted->len);
-	free(formatted);
-	return (ret);
-}
-
-int	main(void)
-{
-	ft_printf("%cboob%boob\n");
+	if (state == FLAGS)
+		return (add_flag(&arg->flags, c));
+	else if (state == WIDTH)
+		return (get_argument_width(arg, c));
+	else if (state == PRECISION)
+		return (get_argument_precision(arg, c));
+	else if (state == LENGTH)
+		return (add_length(&arg->length, c));
+	return (1);
 }
