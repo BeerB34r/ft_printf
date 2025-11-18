@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                            ::::::::        */
-/*   fa_c.h                                                  :+:    :+:       */
+/*   specifier_percent.c                                     :+:    :+:       */
 /*                                                          +:+               */
 /*   By: mde-beer <mde-beer@student.codam.nl>              +#+                */
 /*                                                        +#+                 */
-/*   Created: 2025/11/15 20:09:07 by mde-beer            #+#    #+#           */
-/*   Updated: 2025/11/18 20:22:45 by mde-beer            ########   odam.nl   */
+/*   Created: 2025/11/18 19:48:43 by mde-beer            #+#    #+#           */
+/*   Updated: 2025/11/18 19:51:03 by mde-beer            ########   odam.nl   */
 /*                                                                            */
 /*   —————No norm compliance?——————                                           */
 /*   ⠀⣞⢽⢪⢣⢣⢣⢫⡺⡵⣝⡮⣗⢷⢽⢽⢽⣮⡷⡽⣜⣜⢮⢺⣜⢷⢽⢝⡽⣝                                           */
@@ -25,62 +25,23 @@
 /*   ——————————————————————————————                                           */
 /* ************************************************************************** */
 
-#ifndef FA_C_H
-# define FA_C_H
+#include "fa_c.h"
+#include "_printf.h"
 
-// Type definitions
-typedef struct s_flexible_character_array
+t_fa_c
+	*specifier_percent(
+va_list args,
+unsigned int current_len,
+struct s_printf_argument *format
+)
 {
-	unsigned int	len;
-	char			buf[];
-}	t_fa_c;
+	t_fa_c	*out;
 
-// Function prototypes
-
-/**
- * @brief allocates a new flexible array
- *
- * @param len length of the array
- * @return flexible array | NULL
- */
-t_fa_c
-	*calloc_fa_c(
-		unsigned int len
-		);	// FILE: fa_c_alloc.c
-
-/**
- * @brief reallocates an existing flexible array
- *
- * allocates a new block memory block in accordance with len, copies the
- * original data into the new memory block and frees the old memory
- *
- * if allocation fails, does not free @param old and returns NULL
- * @param old flexible array to be reallocated
- * @param len new length of the flexible array
- * @return flexible array | NULL
- */
-t_fa_c
-	*realloc_fa_c(
-		t_fa_c *old,
-		unsigned int len
-		);	// FILE: fa_c_alloc.c
-
-/**
- * @brief joins two flexible arrays
- *
- * @param fa1 prefix flexible array
- * @param fa2 suffix flexible array
- * @return flexible array | NULL
- */
-t_fa_c
-	*join_fa_c(
-		t_fa_c *fa1,
-		t_fa_c *fa2
-		);	// FILE: fa_c_alloc.c
-
-t_fa_c
-	*fa_c_dup_from_str(
-		const char *str
-		);	// FILE: fa_c_alloc.c
-
-#endif // FA_C_H
+	(void)args;
+	(void)current_len;
+	(void)format;
+	out = calloc_fa_c(1);
+	if (out)
+		out->buf[0] = '%';
+	return (out);
+}

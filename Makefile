@@ -1,10 +1,10 @@
 CC				= cc
-CPPFLAGS		= $(INC)
+CPPFLAGS		= $(INC) -g
 CFLAGS			= -Wall -Wextra -Werror -O3
 LDFLAGS			=
 ARFLAGS			= crs
 
-SRC				= fa_c_alloc.c ft_printf.c get_argument.c handle_format.c handle_precision.c handle_raw.c handle_sign.c handle_width.c specifier.c
+SRC				= fa_c_alloc.c ft_printf.c get_argument.c handle_format.c handle_precision.c handle_raw.c handle_sign.c handle_width.c specifier.c specifier_percent.c specifier_character.c specifier_string.c specifier_store.c
 SRCDIR			= src/ src/fa_c
 
 INC				= -Iinc/

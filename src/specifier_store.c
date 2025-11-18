@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                            ::::::::        */
-/*   fa_c.h                                                  :+:    :+:       */
+/*   specifier_store.c                                       :+:    :+:       */
 /*                                                          +:+               */
 /*   By: mde-beer <mde-beer@student.codam.nl>              +#+                */
 /*                                                        +#+                 */
-/*   Created: 2025/11/15 20:09:07 by mde-beer            #+#    #+#           */
-/*   Updated: 2025/11/18 20:22:45 by mde-beer            ########   odam.nl   */
+/*   Created: 2025/11/18 19:51:44 by mde-beer            #+#    #+#           */
+/*   Updated: 2025/11/18 20:01:10 by mde-beer            ########   odam.nl   */
 /*                                                                            */
 /*   —————No norm compliance?——————                                           */
 /*   ⠀⣞⢽⢪⢣⢣⢣⢫⡺⡵⣝⡮⣗⢷⢽⢽⢽⣮⡷⡽⣜⣜⢮⢺⣜⢷⢽⢝⡽⣝                                           */
@@ -25,62 +25,36 @@
 /*   ——————————————————————————————                                           */
 /* ************************************************************************** */
 
-#ifndef FA_C_H
-# define FA_C_H
+#include <stdint.h>
+#include <sys/types.h>
+#include <stddef.h>
+#include "fa_c.h"
+#include "_printf.h"
 
-// Type definitions
-typedef struct s_flexible_character_array
+t_fa_c
+	*specifier_store(
+va_list args,
+unsigned int current_len,
+struct s_printf_argument *format
+)
 {
-	unsigned int	len;
-	char			buf[];
-}	t_fa_c;
-
-// Function prototypes
-
-/**
- * @brief allocates a new flexible array
- *
- * @param len length of the array
- * @return flexible array | NULL
- */
-t_fa_c
-	*calloc_fa_c(
-		unsigned int len
-		);	// FILE: fa_c_alloc.c
-
-/**
- * @brief reallocates an existing flexible array
- *
- * allocates a new block memory block in accordance with len, copies the
- * original data into the new memory block and frees the old memory
- *
- * if allocation fails, does not free @param old and returns NULL
- * @param old flexible array to be reallocated
- * @param len new length of the flexible array
- * @return flexible array | NULL
- */
-t_fa_c
-	*realloc_fa_c(
-		t_fa_c *old,
-		unsigned int len
-		);	// FILE: fa_c_alloc.c
-
-/**
- * @brief joins two flexible arrays
- *
- * @param fa1 prefix flexible array
- * @param fa2 suffix flexible array
- * @return flexible array | NULL
- */
-t_fa_c
-	*join_fa_c(
-		t_fa_c *fa1,
-		t_fa_c *fa2
-		);	// FILE: fa_c_alloc.c
-
-t_fa_c
-	*fa_c_dup_from_str(
-		const char *str
-		);	// FILE: fa_c_alloc.c
-
-#endif // FA_C_H
+	if (format->length == HH)
+		*va_arg(args, signed char *) = (signed char)current_len;
+	else if (format->length == H)
+		*va_arg(args, short *) = (short)current_len;
+	else if (format->length == NONE)
+		*va_arg(args, int *) = (int)current_len;
+	else if (format->length == L)
+		*va_arg(args, long *) = (long)current_len;
+	else if (format->length == LL)
+		*va_arg(args, long long *) = (long long)current_len;
+	else if (format->length == J)
+		*va_arg(args, intmax_t *) = (intmax_t)current_len;
+	else if (format->length == Z)
+		*va_arg(args, ssize_t *) = (ssize_t)current_len;
+	else if (format->length == T)
+		*va_arg(args, ptrdiff_t *) = (ptrdiff_t)current_len;
+	else
+		return (NULL);
+	return (calloc_fa_c(0));
+}

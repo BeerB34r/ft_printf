@@ -6,7 +6,7 @@
 /*   By: mde-beer <mde-beer@student.codam.nl>              +#+                */
 /*                                                        +#+                 */
 /*   Created: 2025/11/15 20:07:26 by mde-beer            #+#    #+#           */
-/*   Updated: 2025/11/17 22:33:25 by mde-beer            ########   odam.nl   */
+/*   Updated: 2025/11/18 20:24:09 by mde-beer            ########   odam.nl   */
 /*                                                                            */
 /*   —————No norm compliance?——————                                           */
 /*   ⠀⣞⢽⢪⢣⢣⢣⢫⡺⡵⣝⡮⣗⢷⢽⢽⢽⣮⡷⡽⣜⣜⢮⢺⣜⢷⢽⢝⡽⣝                                           */
@@ -148,4 +148,29 @@ int
 		t_fa_c **out,
 		struct s_printf_argument format
 		);	// FILE: handle_width.c
+//	//	Specifier functions
+t_fa_c
+	*specifier_percent(
+		va_list args,
+		unsigned int current_len,
+		struct s_printf_argument *format
+		);	// FILE: specifier_percent.c
+t_fa_c
+	*specifier_character(
+		va_list args,
+		unsigned int current_len,
+		struct s_printf_argument *format
+		);	// FILE: specifier_character.c
+t_fa_c
+	*specifier_string(
+		va_list args,
+		unsigned int current_len,
+		struct s_printf_argument *format
+		);	// FILE: specifier_string.c
+t_fa_c
+	*specifier_store(
+		va_list args,
+		unsigned int current_len,
+		struct s_printf_argument *format
+		);	//FILE: specifier_store.c
 #endif // _PRINTF_H

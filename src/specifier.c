@@ -125,21 +125,22 @@ struct s_printf_argument *arg
 }
 
 static
-bool
-	check_invalid(
-char specifier,
-struct s_printf_argument format
+void
+	set_specifier_and_check_validity(
+enum e_printf_specifier specifier,
+struct s_printf_argument *format
 )
 {
-	if (specifier != '%' && specifier != 'n')
-		return (false);
-	if (format.flags
-		|| format.using_width || format.w_arg || format.width
-		|| format.using_precision || format.p_arg || format.precision)
-		return (true);
-	if (specifier == '%' && format.length)
-		return (true);
-	return (false);
+	format->specifier = specifier;
+	format->invalid = false;
+	if (format->specifier != PERCENT && format->specifier != STORE)
+		return ;
+	if (format->flags
+		|| format->using_width || format->w_arg || format->width
+		|| format->using_precision || format->p_arg || format->precision)
+		format->invalid = true;
+	if (specifier == '%' && format->length)
+		format->invalid = true;
 }
 
 char
@@ -148,10 +149,15 @@ const char *format,
 struct s_printf_argument *arg
 )
 {
-	const static char				specifiers[] = "%csdioxXufFeEaAgGnp";
-	enum e_get_specifier_state		state;
-	bool							could_be_asterisk;
-	char							*current;
+	const static char						spec_char[] = "%csdioxXufFeEaAgGnp";
+	const static enum e_printf_specifier	spec_enum[] = {
+		PERCENT, CHARACTER, STRING, SIGNED_INTEGER, SIGNED_INTEGER, OCTAL,
+		HEXADECIMAL, HEXADECIMAL, UNSIGNED_INTEGER, FLOAT, FLOAT,
+		DECIMAL_EXPONENT, DECIMAL_EXPONENT, HEXADECIMAL_EXPONENT,
+		HEXADECIMAL_EXPONENT, HEURISTIC_FLOAT, HEURISTIC_FLOAT, STORE, POINTER};
+	enum e_get_specifier_state				state;
+	bool									could_be_asterisk;
+	char									*current;
 
 	bzero(arg, sizeof(struct s_printf_argument));
 	current = NULL;
@@ -159,13 +165,13 @@ struct s_printf_argument *arg
 	could_be_asterisk = true;
 	while (*format)
 	{
-		current = strchr(specifiers, *format);
+		current = strchr(spec_char, *format);
 		if (current)
 			break ;
 		if (handle_state(&state, &format, &could_be_asterisk, arg))
 			return (NULL);
 	}
 	if (current)
-		arg->invalid = check_invalid(*current, *arg);
+		set_specifier_and_check_validity(spec_enum[current - spec_char], arg);
 	return (current);
 }

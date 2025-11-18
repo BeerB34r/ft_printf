@@ -6,9 +6,7 @@
 /*   By: mde-beer <mde-beer@student.codam.nl>              +#+                */
 /*                                                        +#+                 */
 /*   Created: 2025/11/17 20:24:56 by mde-beer            #+#    #+#           */
-/*   Updated: 2025/11/17 22:33:29 by mde-beer            ########   odam.nl   */
-/*                                                                            */
-/*   —————No norm compliance?——————                                           */
+/*   Updated: 2025/11/18 20:15:52 by mde-beer            ########   odam.nl   */ /*                                                                            */ /*   —————No norm compliance?——————                                           */
 /*   ⠀⣞⢽⢪⢣⢣⢣⢫⡺⡵⣝⡮⣗⢷⢽⢽⢽⣮⡷⡽⣜⣜⢮⢺⣜⢷⢽⢝⡽⣝                                           */
 /*   ⠸⡸⠜⠕⠕⠁⢁⢇⢏⢽⢺⣪⡳⡝⣎⣏⢯⢞⡿⣟⣷⣳⢯⡷⣽⢽⢯⣳⣫⠇                                           */
 /*   ⠀⠀⢀⢀⢄⢬⢪⡪⡎⣆⡈⠚⠜⠕⠇⠗⠝⢕⢯⢫⣞⣯⣿⣻⡽⣏⢗⣗⠏⠀                                           */
@@ -59,6 +57,9 @@ unsigned int current_len
 {
 	static t_fa_c *(*const	specifiers[])(
 			va_list, unsigned int, struct s_printf_argument *) = {
+		specifier_percent,
+		specifier_character,
+		specifier_string,
 		NULL,
 		NULL,
 		NULL,
@@ -67,10 +68,7 @@ unsigned int current_len
 		NULL,
 		NULL,
 		NULL,
-		NULL,
-		NULL,
-		NULL,
-		NULL,
+		specifier_store,
 		NULL
 	};
 	t_fa_c					*out;
@@ -78,6 +76,8 @@ unsigned int current_len
 	out = NULL;
 	if (specifiers[format.specifier])
 		out = specifiers[format.specifier](args, current_len, &format);
+	else
+		out = calloc_fa_c(0);
 	if (out)
 		add_formatting(&out, format);
 	return (out);
@@ -121,9 +121,8 @@ unsigned int current_len
 		arg.width = va_arg(args, int);
 	if (arg.p_arg)
 		arg.precision = va_arg(args, int);
-	*format = strchr(*format, *specifier) + 1;
+	*format = strchr(*format + 1, *specifier) + 1;
 	if (isupper(*specifier))
 		arg.uppercase = true;
-	return (calloc_fa_c(0));
 	return (get_formatted(arg, args, current_len));
 }

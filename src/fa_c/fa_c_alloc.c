@@ -6,7 +6,7 @@
 /*   By: mde-beer <mde-beer@student.codam.nl>              +#+                */
 /*                                                        +#+                 */
 /*   Created: 2025/11/15 20:13:44 by mde-beer            #+#    #+#           */
-/*   Updated: 2025/11/15 20:14:31 by mde-beer            ########   odam.nl   */
+/*   Updated: 2025/11/18 20:21:47 by mde-beer            ########   odam.nl   */
 /*                                                                            */
 /*   —————No norm compliance?——————                                           */
 /*   ⠀⣞⢽⢪⢣⢣⢣⢫⡺⡵⣝⡮⣗⢷⢽⢽⢽⣮⡷⡽⣜⣜⢮⢺⣜⢷⢽⢝⡽⣝                                           */
@@ -110,5 +110,17 @@ t_fa_c *fa2
 		if (fa2)
 			memcpy(out->buf + first_len, fa2->buf, fa2->len);
 	}
+	return (out);
+}
+
+t_fa_c
+	*fa_c_dup_from_str(
+const char *str
+)
+{
+	t_fa_c *const	out = calloc_fa_c(strlen(str));
+
+	if (out)
+		memcpy(out->buf, str, out->len);
 	return (out);
 }
