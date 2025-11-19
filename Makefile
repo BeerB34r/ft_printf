@@ -6,7 +6,7 @@ ARFLAGS			= crs
 
 VPATH			= $(SRCDIR)
 SRC				= fa_c_alloc.c ft_printf.c get_argument.c handle_format.c handle_precision.c handle_raw.c handle_sign.c handle_width.c parse_argument.c \
-					specifier_percent.c specifier_character.c specifier_string.c specifier_signed_integer.c specifier_octal.c specifier_hexadecimal.c specifier_unsigned_integer.c specifier_store.c specifier_pointer.c
+					specifier_percent.c specifier_character.c specifier_string.c specifier_signed_integer.c specifier_octal.c specifier_hexadecimal.c specifier_unsigned_integer.c specifier_float.c specifier_store.c specifier_pointer.c
 SRCDIR			= src/fa_c src/specifiers src/
 
 INC				= -Iinc/

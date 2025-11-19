@@ -43,6 +43,11 @@ struct s_printf_argument *format
 	char				buf[100];
 	int					index;
 
+	if (!n)
+	{
+		format->null = true;
+		return (fa_c_from_str("(nil)"));
+	}
 	buf[99] = 0;
 	buf[98] = radix[n % 16];
 	index = 97;
@@ -53,6 +58,8 @@ struct s_printf_argument *format
 		n /= 16;
 		buf[index--] = radix[n % 16];
 	}
+	buf[index--] = 'x';
+	buf[index--] = '0';
 	return (fa_c_from_str(&buf[index + 1]));
 }
 
@@ -63,25 +70,8 @@ unsigned int current_len,
 struct s_printf_argument *format
 )
 {
-	static const char *const	prefix_str = "0x";
-	t_fa_c						*temp;
-	t_fa_c						*prefix;
-	t_fa_c						*out;
-
 	(void)current_len;
 	if (format->length != NONE)
 		return (NULL);
-	temp = pointer_itoa(va_arg(arg, uintptr_t), format);
-	if (!temp)
-		return (NULL);
-	prefix = fa_c_from_str(prefix_str);
-	if (!prefix)
-	{
-		free(temp);
-		return (NULL);
-	}
-	out = join_fa_c(prefix, temp);
-	free(temp);
-	free(prefix);
-	return (out);
+	return (pointer_itoa(va_arg(arg, uintptr_t), format));
 }

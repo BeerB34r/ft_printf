@@ -64,7 +64,7 @@ unsigned int current_len
 		specifier_octal,
 		specifier_hexadecimal,
 		specifier_unsigned_integer,
-		NULL,
+		specifier_float,
 		NULL,
 		NULL,
 		NULL,
@@ -76,8 +76,6 @@ unsigned int current_len
 	out = NULL;
 	if (specifiers[format.specifier])
 		out = specifiers[format.specifier](args, current_len, &format);
-	else
-		out = calloc_fa_c(0);
 	if (out)
 		add_formatting(&out, format);
 	return (out);
