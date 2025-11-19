@@ -6,7 +6,7 @@
 /*   By: mde-beer <mde-beer@student.codam.nl>              +#+                */
 /*                                                        +#+                 */
 /*   Created: 2025/11/17 22:27:38 by mde-beer            #+#    #+#           */
-/*   Updated: 2025/11/17 22:29:15 by mde-beer            ########   odam.nl   */
+/*   Updated: 2025/11/19 04:45:36 by mde-beer            ########   odam.nl   */
 /*                                                                            */
 /*   —————No norm compliance?——————                                           */
 /*   ⠀⣞⢽⢪⢣⢣⢣⢫⡺⡵⣝⡮⣗⢷⢽⢽⢽⣮⡷⡽⣜⣜⢮⢺⣜⢷⢽⢝⡽⣝                                           */
@@ -91,9 +91,8 @@ struct s_printf_argument format
 		if (!temp)
 			free(*out);
 		*out = temp;
-		return (!*out);
 	}
-	else if (format.precision > (int)strlen((*out)->buf))
+	else if ((unsigned int)format.precision > (*out)->len)
 	{
 		temp = calloc_fa_c(format.precision);
 		if (!temp)
@@ -102,12 +101,15 @@ struct s_printf_argument format
 			return (1);
 		}
 		memset(temp->buf, '0', sizeof(char) * temp->len);
-		memcpy(temp + temp->len - (*out)->len,
-			(*out)->buf, sizeof(char) * (*out)->len);
+		;
+		;
+		;
+		if ((*out)->len)
+			memcpy(temp + temp->len - (*out)->len - 1, (*out)->buf, sizeof(char) * (*out)->len);
 		free(*out);
 		*out = temp;
 	}
-	return (0);
+	return (!*out);
 }
 
 static

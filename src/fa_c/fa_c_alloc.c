@@ -105,9 +105,9 @@ t_fa_c *fa2
 	out = calloc_fa_c(first_len + second_len);
 	if (out)
 	{
-		if (fa1)
+		if (fa1 && fa1->len)
 			memcpy(out->buf, fa1->buf, fa1->len);
-		if (fa2)
+		if (fa2 && fa2->len)
 			memcpy(out->buf + first_len, fa2->buf, fa2->len);
 	}
 	return (out);

@@ -22,7 +22,7 @@ RM				= rm -fr
 
 NAME			= libftprintf.a
 
-MAKEFLAGS		= j
+MAKEFLAGS		=# j
 .DEFAULT_GOAL	= all
 .PRECIOUS		: $(BINDIR) $(DEPDIR) $(BIN)
 .PHONY			: clean fclean re all
@@ -30,6 +30,7 @@ MAKEFLAGS		= j
 -include $(DEP)
 
 all				: $(NAME)
+bonus			: all
 
 test			: $(NAME)
 	$(CC) main.c $(NAME) -o test

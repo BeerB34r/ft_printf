@@ -37,6 +37,8 @@ t_fa_c **out,
 struct s_printf_argument format
 )
 {
+	unsigned int	i;
+
 	if (format.specifier == STORE || format.specifier == PERCENT)
 		return ;
 	if (handle_precision(out, format))
@@ -45,6 +47,10 @@ struct s_printf_argument format
 		return ;
 	if (handle_width(out, format))
 		return ;
+	i = -1;
+	if (format.uppercase)
+		while (++i < (*out)->len)
+			(*out)->buf[i] = toupper((*out)->buf[i]);
 }
 
 static
