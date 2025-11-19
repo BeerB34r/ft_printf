@@ -33,7 +33,7 @@ all				: $(NAME)
 
 test			: $(NAME)
 	$(CC) main.c $(NAME) -o test
-	./test
+	./test | cat -e
 	$(RM) test
 
 $(NAME)			: $(NAME)($(BIN))

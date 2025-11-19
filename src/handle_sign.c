@@ -177,7 +177,7 @@ struct s_printf_argument format
 		hex_float_sign,
 		NULL,
 		NULL,
-		NULL
+		hex_sign
 	};
 
 	if (specifiers[format.specifier])

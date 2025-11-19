@@ -32,6 +32,7 @@
 #include "_printf.h"
 
 static int	prepend_zero(t_fa_c **out, struct s_printf_argument format);
+static int	truncate(t_fa_c **out, struct s_printf_argument format);
 
 // As a reminder, the format specifiers enum is in the following order:
 // PERCENT
@@ -57,7 +58,7 @@ struct s_printf_argument format
 	static int (*const	specifiers[])(t_fa_c **, struct s_printf_argument) = {
 		NULL,
 		NULL,
-		NULL,
+		truncate,
 		prepend_zero,
 		prepend_zero,
 		prepend_zero,
@@ -67,7 +68,7 @@ struct s_printf_argument format
 		NULL,
 		NULL,
 		NULL,
-		NULL
+		prepend_zero
 	};
 
 	if (specifiers[format.specifier])
@@ -106,5 +107,30 @@ struct s_printf_argument format
 		free(*out);
 		*out = temp;
 	}
+	return (0);
+}
+
+static
+int
+	truncate(
+t_fa_c **out,
+struct s_printf_argument format
+)
+{
+	t_fa_c	*temp;
+
+	if (!format.using_precision)
+		return (0);
+	if (format.null && format.precision < 6)
+		format.precision = 0;
+	else if (format.null || (unsigned int)format.precision >= (*out)->len)
+		return (0);
+	temp = realloc_fa_c(*out, format.precision);
+	if (!temp)
+	{
+		free(*out);
+		return (1);
+	}
+	*out = temp;
 	return (0);
 }

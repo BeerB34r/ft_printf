@@ -101,6 +101,20 @@ const char **format
 	return (out);
 }
 
+static
+int
+	default_precision(
+enum e_printf_specifier type
+)
+{
+	if (type == SIGNED_INTEGER || type == OCTAL || type == HEXADECIMAL
+		|| type == UNSIGNED_INTEGER)
+		return (1);
+	else if (type == FLOAT)
+		return (6);
+	return (0);
+}
+
 t_fa_c
 	*handle_format(
 const char **format,
@@ -119,6 +133,8 @@ unsigned int current_len
 		arg.width = va_arg(args, int);
 	if (arg.p_arg)
 		arg.precision = va_arg(args, int);
+	else if (!arg.using_precision)
+		arg.precision = default_precision(arg.specifier);
 	*format = strchr(*format + 1, *specifier) + 1;
 	if (isupper(*specifier))
 		arg.uppercase = true;
