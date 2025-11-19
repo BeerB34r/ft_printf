@@ -6,7 +6,7 @@
 /*   By: mde-beer <mde-beer@student.codam.nl>              +#+                */
 /*                                                        +#+                 */
 /*   Created: 2025/11/15 20:13:44 by mde-beer            #+#    #+#           */
-/*   Updated: 2025/11/18 20:21:47 by mde-beer            ########   odam.nl   */
+/*   Updated: 2025/11/18 21:43:25 by mde-beer            ########   odam.nl   */
 /*                                                                            */
 /*   —————No norm compliance?——————                                           */
 /*   ⠀⣞⢽⢪⢣⢣⢣⢫⡺⡵⣝⡮⣗⢷⢽⢽⢽⣮⡷⡽⣜⣜⢮⢺⣜⢷⢽⢝⡽⣝                                           */
@@ -114,7 +114,7 @@ t_fa_c *fa2
 }
 
 t_fa_c
-	*fa_c_dup_from_str(
+	*fa_c_from_str(
 const char *str
 )
 {

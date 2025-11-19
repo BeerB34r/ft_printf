@@ -6,7 +6,7 @@
 /*   By: mde-beer <mde-beer@student.codam.nl>              +#+                */
 /*                                                        +#+                 */
 /*   Created: 2025/11/18 20:17:54 by mde-beer            #+#    #+#           */
-/*   Updated: 2025/11/18 20:23:08 by mde-beer            ########   odam.nl   */
+/*   Updated: 2025/11/18 20:33:14 by mde-beer            ########   odam.nl   */
 /*                                                                            */
 /*   —————No norm compliance?——————                                           */
 /*   ⠀⣞⢽⢪⢣⢣⢣⢫⡺⡵⣝⡮⣗⢷⢽⢽⢽⣮⡷⡽⣜⣜⢮⢺⣜⢷⢽⢝⡽⣝                                           */
@@ -42,7 +42,8 @@ struct s_printf_argument *format
 	if (format->length != NONE)
 		return (NULL);
 	in = va_arg(args, char *);
-	if (!in)
-		return (fa_c_dup_from_str("(null)"));
-	return (fa_c_dup_from_str(in));
+	if (in)
+		return (fa_c_from_str(in));
+	format->null = true;
+	return (fa_c_from_str("(null)"));
 }

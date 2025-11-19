@@ -4,8 +4,10 @@ CFLAGS			= -Wall -Wextra -Werror -O3
 LDFLAGS			=
 ARFLAGS			= crs
 
-SRC				= fa_c_alloc.c ft_printf.c get_argument.c handle_format.c handle_precision.c handle_raw.c handle_sign.c handle_width.c specifier.c specifier_percent.c specifier_character.c specifier_string.c specifier_store.c
-SRCDIR			= src/ src/fa_c
+VPATH			= $(SRCDIR)
+SRC				= fa_c_alloc.c ft_printf.c get_argument.c handle_format.c handle_precision.c handle_raw.c handle_sign.c handle_width.c parse_argument.c \
+					specifier_percent.c specifier_character.c specifier_string.c specifier_signed_integer.c specifier_octal.c specifier_hexadecimal.c specifier_unsigned_integer.c specifier_store.c specifier_pointer.c
+SRCDIR			= src/fa_c src/specifiers src/
 
 INC				= -Iinc/
 
@@ -15,8 +17,6 @@ BINDIR			= bin/
 DEP				= $(addprefix $(DEPDIR),$(SRC:.c=.d))
 DEPDIR			= dep/
 DEPFLAG			= -MM -MF $@ -MT $@ -MT $(BINDIR)$(notdir $(basename $(<:.c=.o)))
-
-VPATH			= $(SRCDIR)
 
 RM				= rm -fr
 

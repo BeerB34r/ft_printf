@@ -6,7 +6,7 @@
 /*   By: mde-beer <mde-beer@student.codam.nl>              +#+                */
 /*                                                        +#+                 */
 /*   Created: 2025/11/15 20:07:26 by mde-beer            #+#    #+#           */
-/*   Updated: 2025/11/18 20:24:09 by mde-beer            ########   odam.nl   */
+/*   Updated: 2025/11/19 00:39:50 by mde-beer            ########   odam.nl   */
 /*                                                                            */
 /*   —————No norm compliance?——————                                           */
 /*   ⠀⣞⢽⢪⢣⢣⢣⢫⡺⡵⣝⡮⣗⢷⢽⢽⢽⣮⡷⡽⣜⣜⢮⢺⣜⢷⢽⢝⡽⣝                                           */
@@ -117,7 +117,7 @@ t_fa_c
 		const char **format
 		);	// FILE: handle_raw.c
 char
-	*get_specifier(
+	*parse_argument(
 		const char *format,
 		struct s_printf_argument *arg
 		);	// FILE: specifier.c
@@ -168,9 +168,39 @@ t_fa_c
 		struct s_printf_argument *format
 		);	// FILE: specifier_string.c
 t_fa_c
+	*specifier_signed_integer(
+		va_list args,
+		unsigned int current_len,
+		struct s_printf_argument *format
+		);	// FILE: specifier_signed_integer.c
+t_fa_c
+	*specifier_octal(
+		va_list args,
+		unsigned int current_len,
+		struct s_printf_argument *format
+		);	// FILE: specifier_octal.c
+t_fa_c
+	*specifier_hexadecimal(
+		va_list args,
+		unsigned int current_len,
+		struct s_printf_argument *format
+		);	// FILE: specifier_hexadecimal.c
+t_fa_c
+	*specifier_unsigned_integer(
+		va_list args,
+		unsigned int current_len,
+		struct s_printf_argument *format
+		);	// FILE: specifier_unsigned_integer.c
+t_fa_c
 	*specifier_store(
 		va_list args,
 		unsigned int current_len,
 		struct s_printf_argument *format
-		);	//FILE: specifier_store.c
+		);	// FILE: specifier_store.c
+t_fa_c
+	*specifier_pointer(
+		va_list args,
+		unsigned int current_len,
+		struct s_printf_argument *format
+		);	// FILE: specifier_pointer.c
 #endif // _PRINTF_H

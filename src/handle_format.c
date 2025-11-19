@@ -60,16 +60,16 @@ unsigned int current_len
 		specifier_percent,
 		specifier_character,
 		specifier_string,
-		NULL,
-		NULL,
-		NULL,
-		NULL,
+		specifier_signed_integer,
+		specifier_octal,
+		specifier_hexadecimal,
+		specifier_unsigned_integer,
 		NULL,
 		NULL,
 		NULL,
 		NULL,
 		specifier_store,
-		NULL
+		specifier_pointer
 	};
 	t_fa_c					*out;
 
@@ -111,7 +111,7 @@ unsigned int current_len
 )
 {
 	struct s_printf_argument	arg;
-	const char *const			specifier = get_specifier(*format + 1, &arg);
+	const char *const			specifier = parse_argument(*format + 1, &arg);
 
 	if (!specifier)
 		return (handle_raw_format(format));

@@ -6,7 +6,7 @@
 /*   By: mde-beer <mde-beer@student.codam.nl>              +#+                */
 /*                                                        +#+                 */
 /*   Created: 2025/11/17 18:11:38 by mde-beer            #+#    #+#           */
-/*   Updated: 2025/11/17 22:22:30 by mde-beer            ########   odam.nl   */
+/*   Updated: 2025/11/18 20:28:42 by mde-beer            ########   odam.nl   */
 /*                                                                            */
 /*   —————No norm compliance?——————                                           */
 /*   ⠀⣞⢽⢪⢣⢣⢣⢫⡺⡵⣝⡮⣗⢷⢽⢽⢽⣮⡷⡽⣜⣜⢮⢺⣜⢷⢽⢝⡽⣝                                           */
@@ -144,7 +144,7 @@ struct s_printf_argument *format
 }
 
 char
-	*get_specifier(
+	*parse_argument(
 const char *format,
 struct s_printf_argument *arg
 )

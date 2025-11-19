@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                            ::::::::        */
-/*   fa_c.h                                                  :+:    :+:       */
+/*   specifier_pointer.c                                     :+:    :+:       */
 /*                                                          +:+               */
 /*   By: mde-beer <mde-beer@student.codam.nl>              +#+                */
 /*                                                        +#+                 */
-/*   Created: 2025/11/15 20:09:07 by mde-beer            #+#    #+#           */
-/*   Updated: 2025/11/18 20:31:55 by mde-beer            ########   odam.nl   */
+/*   Created: 2025/11/19 00:26:34 by mde-beer            #+#    #+#           */
+/*   Updated: 2025/11/19 00:40:08 by mde-beer            ########   odam.nl   */
 /*                                                                            */
 /*   —————No norm compliance?——————                                           */
 /*   ⠀⣞⢽⢪⢣⢣⢣⢫⡺⡵⣝⡮⣗⢷⢽⢽⢽⣮⡷⡽⣜⣜⢮⢺⣜⢷⢽⢝⡽⣝                                           */
@@ -25,62 +25,63 @@
 /*   ——————————————————————————————                                           */
 /* ************************************************************************** */
 
-#ifndef FA_C_H
-# define FA_C_H
+#include <stddef.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
+#include "fa_c.h"
+#include "_printf.h"
 
-// Type definitions
-typedef struct s_flexible_character_array
+static
+t_fa_c
+	*pointer_itoa(
+uintptr_t n,
+struct s_printf_argument *format
+)
 {
-	unsigned int	len;
-	char			buf[];
-}	t_fa_c;
+	const static char	radix[] = "0123456789abcdef";
+	char				buf[100];
+	int					index;
 
-// Function prototypes
-
-/**
- * @brief allocates a new flexible array
- *
- * @param len length of the array
- * @return flexible array | NULL
- */
-t_fa_c
-	*calloc_fa_c(
-		unsigned int len
-		);	// FILE: fa_c_alloc.c
-
-/**
- * @brief reallocates an existing flexible array
- *
- * allocates a new block memory block in accordance with len, copies the
- * original data into the new memory block and frees the old memory
- *
- * if allocation fails, does not free @param old and returns NULL
- * @param old flexible array to be reallocated
- * @param len new length of the flexible array
- * @return flexible array | NULL
- */
-t_fa_c
-	*realloc_fa_c(
-		t_fa_c *old,
-		unsigned int len
-		);	// FILE: fa_c_alloc.c
-
-/**
- * @brief joins two flexible arrays
- *
- * @param fa1 prefix flexible array
- * @param fa2 suffix flexible array
- * @return flexible array | NULL
- */
-t_fa_c
-	*join_fa_c(
-		t_fa_c *fa1,
-		t_fa_c *fa2
-		);	// FILE: fa_c_alloc.c
+	buf[99] = 0;
+	buf[98] = radix[n % 16];
+	index = 97;
+	if (!n)
+		format->null = true;
+	while (n / 16)
+	{
+		n /= 16;
+		buf[index--] = radix[n % 16];
+	}
+	return (fa_c_from_str(&buf[index + 1]));
+}
 
 t_fa_c
-	*fa_c_from_str(
-		const char *str
-		);	// FILE: fa_c_alloc.c
+	*specifier_pointer(
+va_list arg,
+unsigned int current_len,
+struct s_printf_argument *format
+)
+{
+	static const char *const	prefix_str = "0x";
+	t_fa_c						*temp;
+	t_fa_c						*prefix;
+	t_fa_c						*out;
 
-#endif // FA_C_H
+	(void)current_len;
+	if (format->length != NONE)
+		return (NULL);
+	temp = pointer_itoa(va_arg(arg, uintptr_t), format);
+	if (!temp)
+		return (NULL);
+	prefix = fa_c_from_str(prefix_str);
+	if (!prefix)
+	{
+		free(temp);
+		return (NULL);
+	}
+	out = join_fa_c(prefix, temp);
+	free(temp);
+	free(prefix);
+	return (out);
+}
